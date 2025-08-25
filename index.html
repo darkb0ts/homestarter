@@ -8,18 +8,67 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2a2a2a;
+            --header-bg: #333;
+            --input-bg: #2a2a2a;
+            --input-border: transparent;
+            --icon-color: #9ca3af;
+        }
+
+        .light-theme {
+            --bg-color: #f3f4f6;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --header-bg: #e5e7eb;
+            --input-bg: #f9fafb;
+            --input-border: #d1d5db;
+            --icon-color: #6b7280;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a1a1a;
-            color: #e0e0e0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
+        
+        /* Wallpaper CSS */
+        body.wallpaper-1 { background-image: url('https://placehold.co/1920x1080/4f46e5/ffffff?text=Tech+Gradient'); }
+        body.wallpaper-2 { background-image: url('https://placehold.co/1920x1080/3b82f6/ffffff?text=Modern+Abstract'); }
+        body.wallpaper-3 { background-image: url('https://placehold.co/1920x1080/10b981/ffffff?text=Green+Circuit'); }
+
         .card {
-            background-color: #2a2a2a;
-            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: var(--card-bg);
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
         }
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .header {
+            background-color: var(--header-bg);
+            transition: background-color 0.3s;
+        }
+        .input-style {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--text-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .input-style:focus {
+            border-color: #a855f7;
+            outline: none;
+        }
+        .icon-style {
+            color: var(--icon-color);
+            transition: color 0.3s;
         }
         /* Custom scrollbar for webkit browsers */
         ::-webkit-scrollbar {
@@ -35,42 +84,74 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+        /* Style for collapsed content */
+        .collapsed-content {
+            display: none;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
     <!-- Header Section -->
     <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div class="w-full md:w-1/3">
-            <div class="relative">
-                <!-- Search input with filter functionality -->
-                <input id="searchInput" type="text" placeholder="Search Startpage to filter" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[#2a2a2a] text-[#e0e0e0] placeholder-gray-500 border-2 border-transparent focus:border-purple-500 focus:outline-none transition-colors">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+            <!-- Dynamic greeting -->
+            <div id="greeting" class="text-2xl font-bold text-white"></div>
+            <!-- Real-time clock display -->
+            <div id="clock" class="text-5xl md:text-6xl font-extrabold text-white mb-2"></div>
+            <!-- Dynamic quote display -->
+            <p id="quote" class="text-sm italic text-gray-300"></p>
+            
+            <!-- Search bar with improved UI -->
+            <div class="relative w-full mt-6">
+                <input id="searchInputExternal" type="text" placeholder="Search the web" class="w-full pl-12 pr-32 py-4 rounded-full input-style border-2 focus:border-purple-500 text-lg">
+                <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 icon-style" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.085.122l3.64 3.64a1 1 0 0 0 1.415-1.414l-3.64-3.64a1 1 0 0 0-.122-.085zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                 </svg>
+                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
+                    <!-- Search engine dropdown -->
+                    <select id="searchEngine" class="bg-transparent text-sm cursor-pointer icon-style pr-2">
+                        <option value="google" class="bg-gray-800 text-white">Google</option>
+                        <option value="brave" class="bg-gray-800 text-white">Brave</option>
+                        <option value="duckduckgo" class="bg-gray-800 text-white">DuckDuckGo</option>
+                    </select>
+                    <!-- Search button -->
+                    <button id="searchButton" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm font-semibold transition-colors">Go</button>
+                </div>
             </div>
         </div>
+
         <div class="flex items-center gap-2 text-sm text-gray-400">
-            <span>Theme</span>
-            <span class="text-white font-semibold">Dashy-Docs</span>
+            <!-- Theme toggle button -->
+            <button id="themeToggle" class="p-2 rounded-md header cursor-pointer hover:bg-purple-500 transition-colors" title="Toggle Theme">
+                <span class="text-white font-semibold">Dashy-Docs</span>
+            </button>
             <div class="flex items-center gap-2 ml-4">
-                <span class="p-2 rounded-md bg-[#2a2a2a] cursor-pointer" title="Layout">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                 <!-- Wallpaper change button -->
+                 <button id="wallpaperToggle" class="p-2 rounded-md header cursor-pointer hover:bg-purple-500 transition-colors" title="Change Wallpaper">
+                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                        <path d="M12.804 14q.427-.674.802-1.399l-.364-.258a.49.49 0 0 0-.256.027 1.488 1.488 0 0 1-.502.164l-.538-.724a1.5 1.5 0 0 0-.494-.367c-.203-.09-.307-.267-.214-.515.203-.54.67-.84.98-.99.014-.007.029-.011.04-.017l.006-.003a.035.035 0 0 0 .01-.005l.004-.002.001-.001a.066.066 0 0 0 .01-.005l.002-.001L14.73 4h-.233a2 2 0 0 0-1.996 1.768L8.643 14h6.052c.264 0 .5-.213.5-.477v-.252a.5.5 0 0 0-.17-.375z"/>
+                        <path fill-rule="evenodd" d="M11.5 1h-7A2.5 2.5 0 0 0 2 3.5v9A2.5 2.5 0 0 0 4.5 15h7a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 11.5 1zM3 3.5A.5.5 0 0 1 3.5 3h7A.5.5 0 0 1 11 3.5v9a.5.5 0 0 1-.5.5h-7A.5.5 0 0 1 3 12.5v-9z"/>
+                    </svg>
+                </button>
+                <span class="p-2 rounded-md header cursor-pointer" title="Layout">
+                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M1.5 3A1.5 1.5 0 0 0 0 4.5v3A1.5 1.5 0 0 0 1.5 9h3A1.5 1.5 0 0 0 6 7.5v-3A1.5 1.5 0 0 0 4.5 3h-3zM10.5 3A1.5 1.5 0 0 0 9 4.5v3A1.5 1.5 0 0 0 10.5 9h3A1.5 1.5 0 0 0 15 7.5v-3A1.5 1.5 0 0 0 13.5 3h-3zM1.5 10A1.5 1.5 0 0 0 0 11.5v3A1.5 1.5 0 0 0 1.5 16h3A1.5 1.5 0 0 0 6 14.5v-3A1.5 1.5 0 0 0 4.5 10h-3zM10.5 10A1.5 1.5 0 0 0 9 11.5v3A1.5 1.5 0 0 0 10.5 16h3A1.5 1.5 0 0 0 15 14.5v-3A1.5 1.5 0 0 0 13.5 10h-3z"/>
                     </svg>
                 </span>
-                <span class="p-2 rounded-md bg-[#2a2a2a] cursor-pointer" title="Item Size">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <span class="p-2 rounded-md header cursor-pointer" title="Item Size">
+                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M12.5 14a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM11 1.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM12 11.5a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12.5a.5.5 0 0 1-.5-.5zM3.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-15a.5.5 0 0 1 .5-.5h2z"/>
                     </svg>
                 </span>
-                <span class="p-2 rounded-md bg-[#2a2a2a] cursor-pointer" title="Config">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <span class="p-2 rounded-md header cursor-pointer" title="Config">
+                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V1.5zM2 2v12h12V2H2zm2 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"/>
                     </svg>
                 </span>
-                <span class="p-2 rounded-md bg-[#2a2a2a] cursor-pointer" title="Log in">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <span class="p-2 rounded-md header cursor-pointer" title="Log in">
+                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h15a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H.5zM1 2h14v12H1V2z"/>
                     </svg>
                 </span>
@@ -79,15 +160,36 @@
     </header>
 
     <!-- Main Dashboard Content -->
-    <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <main id="mainContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Code Analysis & Monitoring Section -->
-        <section class="code-analysis-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-purple-500"></span>
-                <span class="text-sm">Code Analysis & Monitoring</span>
+                <span class="text-sm bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                    Code Analysis & Monitoring
+                  </span>
+                  
+                  
+                <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Card with a link to Snyk -->
                 <a href="https://snyk.io" class="group block card rounded-lg p-4 text-center" target="_blank">
                     <div class="flex flex-col items-center">
@@ -162,12 +264,29 @@
         </section>
 
         <!-- Project Stats & Metrics Section -->
-        <section class="project-stats-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-green-500"></span>
                 <span class="text-sm">Project Stats & Metrics</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <a href="#" class="group block card rounded-lg p-4 text-center">
                     <div class="flex flex-col items-center">
                         <span class="text-2xl mb-2">📊</span>
@@ -208,12 +327,29 @@
         </section>
         
         <!-- Deployment & Monitoring Section -->
-        <section class="deployment-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-blue-500"></span>
                 <span class="text-sm">Deployment & Monitoring</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Card with a link to Netlify -->
                 <a href="https://www.netlify.com/" class="group block card rounded-lg p-4 text-center" target="_blank">
                     <div class="flex flex-col items-center">
@@ -258,14 +394,115 @@
                 </a>
             </div>
         </section>
+        
+        <!-- Cloud Services Section -->
+        <section class="section-card">
+            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
+                <span class="w-2 h-6 mr-3 rounded-md bg-cyan-500"></span>
+                <span class="text-sm">Cloud Services</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
+                <a href="#" class="group block card rounded-lg p-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-2xl mb-2">☁️</span>
+                        <span class="text-sm">AWS</span>
+                    </div>
+                </a>
+                <a href="#" class="group block card rounded-lg p-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-2xl mb-2">🌐</span>
+                        <span class="text-sm">GCP</span>
+                    </div>
+                </a>
+                <a href="#" class="group block card rounded-lg p-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-2xl mb-2">💧</span>
+                        <span class="text-sm">Azure</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+        <!-- AI / ML Tools Section -->
+        <section class="section-card">
+            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
+                <span class="w-2 h-6 mr-3 rounded-md bg-pink-500"></span>
+                <span class="text-sm">AI / ML Tools</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
+                <a href="#" class="group block card rounded-lg p-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-2xl mb-2">🧠</span>
+                        <span class="text-sm">TensorFlow</span>
+                    </div>
+                </a>
+                <a href="#" class="group block card rounded-lg p-4 text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-2xl mb-2">🤖</span>
+                        <span class="text-sm">PyTorch</span>
+                    </div>
+                </a>
+            </div>
+        </section>
 
         <!-- Socials & Review Sites Section -->
-        <section class="socials-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-yellow-500"></span>
                 <span class="text-sm">Socials & Review Sites</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Card, placeholder link -->
                 <a href="#" class="group block card rounded-lg p-4 text-center">
                     <div class="flex flex-col items-center">
@@ -312,12 +549,29 @@
         </section>
         
         <!-- Environments Section -->
-        <section class="environments-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-red-500"></span>
                 <span class="text-sm">Environments</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Card, placeholder link -->
                 <a href="#" class="group block card rounded-lg p-4 text-center">
                     <div class="flex flex-col items-center">
@@ -350,30 +604,81 @@
         </section>
         
         <!-- Other Sections -->
-        <section class="other-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
                 <span class="text-sm">Repo</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Add cards here -->
             </div>
         </section>
-        <section class="other-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
                 <span class="text-sm">Usage Docs</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Add cards here -->
             </div>
         </section>
-        <section class="other-section">
+        <section class="section-card">
             <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
                 <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
                 <span class="text-sm">Feature Docs</span>
+                 <div class="ml-auto flex gap-2">
+                    <button class="sort-up" title="Move up">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="sort-down" title="Move down">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="toggle-cards" title="Toggle visibility">
+                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
                 <!-- Add cards here -->
             </div>
         </section>
@@ -382,20 +687,136 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('searchInput');
-            const cards = document.querySelectorAll('.card');
+            // Function to toggle between dark and light themes
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('light-theme');
+            });
 
-            // Listen for keyboard input on the search bar
-            searchInput.addEventListener('keyup', (e) => {
-                const searchValue = e.target.value.toLowerCase();
-                
-                cards.forEach(card => {
-                    const cardText = card.textContent.toLowerCase();
-                    // Show or hide the card based on if its text content includes the search value
-                    if (cardText.includes(searchValue)) {
-                        card.style.display = 'block';
+            // Function to handle external search
+            const searchInputExternal = document.getElementById('searchInputExternal');
+            const searchEngine = document.getElementById('searchEngine');
+            const searchButton = document.getElementById('searchButton');
+
+            const searchEngines = {
+                google: 'https://www.google.com/search?q=',
+                brave: 'https://search.brave.com/search?q=',
+                duckduckgo: 'https://duckduckgo.com/?q='
+            };
+
+            const performSearch = () => {
+                const query = searchInputExternal.value.trim();
+                if (query) {
+                    const engine = searchEngine.value;
+                    const url = searchEngines[engine] + encodeURIComponent(query);
+                    window.open(url, '_blank');
+                }
+            };
+            
+            // Trigger search on button click
+            searchButton.addEventListener('click', performSearch);
+            
+            // Trigger search on Enter key press
+            searchInputExternal.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // --- NEW FEATURES ---
+
+            // Dynamic greeting functionality
+            const greetingElement = document.getElementById('greeting');
+            function updateGreeting() {
+                const now = new Date();
+                const hours = now.getHours();
+                let greeting = '';
+                if (hours < 12) {
+                    greeting = 'Good morning';
+                } else if (hours < 18) {
+                    greeting = 'Good afternoon';
+                } else {
+                    greeting = 'Good evening';
+                }
+                greetingElement.textContent = `${greeting}, Prasanna.`;
+            }
+            updateGreeting();
+
+            // Clock functionality
+            const clockElement = document.getElementById('clock');
+            function updateClock() {
+                const now = new Date();
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            setInterval(updateClock, 1000);
+            updateClock();
+
+            // Wallpaper functionality
+            const wallpaperToggle = document.getElementById('wallpaperToggle');
+            const wallpapers = ['wallpaper-1', 'wallpaper-2', 'wallpaper-3'];
+            let currentWallpaperIndex = 0;
+            wallpaperToggle.addEventListener('click', () => {
+                document.body.classList.remove(...wallpapers);
+                currentWallpaperIndex = (currentWallpaperIndex + 1) % wallpapers.length;
+                document.body.classList.add(wallpapers[currentWallpaperIndex]);
+            });
+            // Set initial wallpaper
+            document.body.classList.add(wallpapers[currentWallpaperIndex]);
+
+            // Quotes functionality
+            const quoteElement = document.getElementById('quote');
+            const quotes = [
+                "The best way to predict the future is to create it.",
+                "Innovation distinguishes between a leader and a follower.",
+                "Simplicity is the ultimate sophistication.",
+                "The only way to do great work is to love what you do.",
+                "It's not a bug, it's a feature!"
+            ];
+            // Display a random quote on page load
+            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteElement.textContent = randomQuote;
+
+            // --- SORT & TOGGLE FUNCTIONALITY ---
+            
+            const mainContent = document.getElementById('mainContent');
+
+            // Toggle functionality
+            document.querySelectorAll('.toggle-cards').forEach(button => {
+                button.addEventListener('click', () => {
+                    const sectionCard = button.closest('.section-card');
+                    const content = sectionCard.querySelector('.section-content');
+                    content.classList.toggle('collapsed-content');
+                    
+                    // Change arrow icon direction
+                    const icon = button.querySelector('svg');
+                    if (content.classList.contains('collapsed-content')) {
+                        icon.innerHTML = '<path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707 2.354 11.354a.5.5 0 0 1-.708-.708l6-6z"/>';
                     } else {
-                        card.style.display = 'none';
+                        icon.innerHTML = '<path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>';
+                    }
+                });
+            });
+
+            // Sort functionality
+            document.querySelectorAll('.sort-up').forEach(button => {
+                button.addEventListener('click', () => {
+                    const sectionCard = button.closest('.section-card');
+                    const prevSection = sectionCard.previousElementSibling;
+                    if (prevSection) {
+                        mainContent.insertBefore(sectionCard, prevSection);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.sort-down').forEach(button => {
+                button.addEventListener('click', () => {
+                    const sectionCard = button.closest('.section-card');
+                    const nextSection = sectionCard.nextElementSibling;
+                    if (nextSection) {
+                        mainContent.insertBefore(nextSection, sectionCard);
                     }
                 });
             });
@@ -404,4 +825,3 @@
 
 </body>
 </html>
-
