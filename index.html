@@ -1,827 +1,1595 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startpage Dashboard</title>
-    <!-- Load Tailwind CSS -->
+    <title>CandyMan Pro - Personal Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(168, 85, 247, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(168, 85, 247, 0.8)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap');
+
         :root {
-            --bg-color: #1a1a1a;
-            --text-color: #e0e0e0;
-            --card-bg: #2a2a2a;
-            --header-bg: #333;
-            --input-bg: #2a2a2a;
-            --input-border: transparent;
-            --icon-color: #9ca3af;
+            --bg-color: #0f0f23;
+            --text-color: #cccccc;
+            --card-bg: rgba(25, 25, 40, 0.8);
+            --header-bg: rgba(30, 30, 50, 0.9);
+            --input-bg: rgba(20, 20, 35, 0.8);
+            --input-border: rgba(168, 85, 247, 0.3);
+            --icon-color: #8b94a8;
+            --accent-color: #a855f7;
+            --shadow: rgba(0, 0, 0, 0.3);
         }
 
-        .light-theme {
-            --bg-color: #f3f4f6;
-            --text-color: #1f2937;
-            --card-bg: #ffffff;
-            --header-bg: #e5e7eb;
-            --input-bg: #f9fafb;
-            --input-border: #d1d5db;
-            --icon-color: #6b7280;
+        /* Theme Variables */
+        .theme-midnight {
+            --bg-color: #0f0f23;
+            --text-color: #cccccc;
+            --card-bg: rgba(25, 25, 40, 0.8);
+            --header-bg: rgba(30, 30, 50, 0.9);
+            --input-bg: rgba(20, 20, 35, 0.8);
+            --accent-color: #a855f7;
+        }
+
+        .theme-matrix {
+            --bg-color: #000000;
+            --text-color: #00ff00;
+            --card-bg: rgba(0, 20, 0, 0.8);
+            --header-bg: rgba(0, 30, 0, 0.9);
+            --input-bg: rgba(0, 15, 0, 0.8);
+            --accent-color: #00ff00;
+        }
+
+        .theme-cyberpunk {
+            --bg-color: #854040;
+            --text-color: #ff00ff;
+            --card-bg: rgba(40, 0, 40, 0.8);
+            --header-bg: rgba(50, 0, 50, 0.9);
+            --input-bg: rgba(30, 0, 30, 0.8);
+            --accent-color: #ff00ff;
+        }
+
+        /* 🌌 Galaxy / Dashy-like */
+        .theme-galaxy {
+            --bg-color: #0f172a;
+            /* deep navy */
+            --text-color: #e2e8f0;
+            /* soft light */
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --header-bg: rgba(51, 65, 85, 0.9);
+            --input-bg: rgba(15, 23, 42, 0.8);
+            --accent-color: #6366f1;
+            /* indigo */
+        }
+
+        /* ☀️ Sunset Neon */
+        .theme-sunset {
+            --bg-color: #1a0b2e;
+            /* dark purple */
+            --text-color: #f9fafb;
+            /* white */
+            --card-bg: rgba(58, 12, 81, 0.85);
+            --header-bg: rgba(91, 33, 182, 0.9);
+            --input-bg: rgba(67, 20, 128, 0.85);
+            --accent-color: #f59e0b;
+            /* amber/gold */
+        }
+
+        /* 🌿 Minimal Mint */
+        .theme-mint {
+            --bg-color: #f0fdf4;
+            --text-color: #064e3b;
+            --card-bg: rgba(187, 247, 208, 0.8);
+            --header-bg: rgba(134, 239, 172, 0.9);
+            --input-bg: rgba(220, 252, 231, 0.8);
+            --accent-color: #10b981;
+            /* emerald */
+        }
+
+        /* 🖤 Monokai / Hacker vibe */
+        .theme-monokai {
+            --bg-color: #272822;
+            --text-color: #f8f8f2;
+            --card-bg: rgba(39, 40, 34, 0.85);
+            --header-bg: rgba(68, 71, 90, 0.9);
+            --input-bg: rgba(50, 50, 45, 0.8);
+            --accent-color: #f92672;
+            /* pink/red */
+        }
+
+        /* 🌈 Glass Aurora (Glance style) */
+        .theme-aurora {
+            --bg-color: linear-gradient(135deg, #1e3a8a, #9333ea, #f43f5e);
+            --text-color: #b4ec28;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --input-bg: rgba(255, 255, 255, 0.15);
+            --accent-color: #38bdf8;
+            /* sky blue */
+            backdrop-filter: blur(10px);
+        }
+
+
+        .theme-ocean {
+            --bg-color: #001122;
+            --text-color: #66d9ef;
+            --card-bg: rgba(0, 30, 60, 0.8);
+            --header-bg: rgba(0, 40, 70, 0.9);
+            --input-bg: rgba(0, 25, 50, 0.8);
+            --accent-color: #66d9ef;
+        }
+
+        .theme-black {
+            --bg-color: #000000;
+            --text-color: #eeb20c;
+            --card-bg: rgba(35, 19, 19, 0.9);
+            --header-bg: rgba(8, 8, 8, 0.95);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --accent-color: #7c3aed;
+        }
+
+        /* Background Patterns */
+        .bg-pattern-1 {
+            background: linear-gradient(45deg, #0f0f23 25%, transparent 25%),
+                linear-gradient(-45deg, #0f0f23 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #0f0f23 75%),
+                linear-gradient(-45deg, transparent 75%, #0f0f23 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+
+        .bg-pattern-2 {
+            background-image: radial-gradient(circle at 1px 1px, rgba(168, 85, 247, 0.3) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .bg-pattern-3 {
+            background-image: linear-gradient(45deg, rgba(168, 85, 247, 0.1) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(168, 85, 247, 0.1) 25%, transparent 25%);
+            background-size: 60px 60px;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            transition: background-color 0.3s, color 0.3s;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            background-attachment: fixed;
         }
-        
-        /* Wallpaper CSS */
-        body.wallpaper-1 { background-image: url('https://placehold.co/1920x1080/4f46e5/ffffff?text=Tech+Gradient'); }
-        body.wallpaper-2 { background-image: url('https://placehold.co/1920x1080/3b82f6/ffffff?text=Modern+Abstract'); }
-        body.wallpaper-3 { background-image: url('https://placehold.co/1920x1080/10b981/ffffff?text=Green+Circuit'); }
+
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
         .card {
-            background-color: var(--card-bg);
-            transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
+
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px var(--shadow);
+            border-color: var(--accent-color);
         }
-        .header {
-            background-color: var(--header-bg);
-            transition: background-color 0.3s;
+
+        .section-card {
+            background: rgba(30, 41, 59, 0.85);
+            /* glassy panel */
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
         }
-        .input-style {
-            background-color: var(--input-bg);
-            border-color: var(--input-border);
+
+        .header-glass {
+            background: var(--header-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-glass {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            backdrop-filter: blur(10px);
             color: var(--text-color);
-            transition: background-color 0.3s, border-color 0.3s;
         }
-        .input-style:focus {
-            border-color: #a855f7;
+
+        .input-glass:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
             outline: none;
         }
-        .icon-style {
-            color: var(--icon-color);
-            transition: color 0.3s;
-        }
-        /* Custom scrollbar for webkit browsers */
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
+
         ::-webkit-scrollbar-track {
-            background: #2a2a2a;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
+
         ::-webkit-scrollbar-thumb {
-            background: #4a4a4a;
-            border-radius: 4px;
+            background: var(--accent-color);
+            border-radius: 10px;
+            transition: background 0.3s;
         }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: #555;
+            background: rgba(168, 85, 247, 0.8);
         }
-        /* Style for collapsed content */
-        .collapsed-content {
-            display: none;
+
+        /* Utility Classes */
+        .text-accent {
+            color: var(--accent-color);
+        }
+
+        .border-accent {
+            border-color: var(--accent-color);
+        }
+
+        .bg-accent {
+            background-color: var(--accent-color);
+        }
+
+        /* Status Indicators */
+        .status-online {
+            background: #10b981;
+        }
+
+        .status-offline {
+            background: #ef4444;
+        }
+
+        .status-warning {
+            background: #f59e0b;
+        }
+
+        .search-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Weather widget styles */
+        .weather-card {
+            background: linear-gradient(135deg, var(--card-bg), rgba(168, 85, 247, 0.1));
+        }
+
+        /* CPU/Memory usage styles */
+        .usage-bar {
+            background: linear-gradient(90deg, var(--accent-color), rgba(168, 85, 247, 0.3));
+            height: 4px;
+            border-radius: 2px;
+            transition: width 0.5s ease;
+        }
+
+        /* Notification styles */
+        .notification {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            backdrop-filter: blur(10px);
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
 
-    <!-- Header Section -->
-    <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <div class="w-full md:w-1/2 flex flex-col items-center">
-            <!-- Dynamic greeting -->
-            <div id="greeting" class="text-2xl font-bold text-white"></div>
-            <!-- Real-time clock display -->
-            <div id="clock" class="text-5xl md:text-6xl font-extrabold text-white mb-2"></div>
-            <!-- Dynamic quote display -->
-            <p id="quote" class="text-sm italic text-gray-300"></p>
-            
-            <!-- Search bar with improved UI -->
-            <div class="relative w-full mt-6">
-                <input id="searchInputExternal" type="text" placeholder="Search the web" class="w-full pl-12 pr-32 py-4 rounded-full input-style border-2 focus:border-purple-500 text-lg">
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 icon-style" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.085.122l3.64 3.64a1 1 0 0 0 1.415-1.414l-3.64-3.64a1 1 0 0 0-.122-.085zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                </svg>
-                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center">
-                    <!-- Search engine dropdown -->
-                    <select id="searchEngine" class="bg-transparent text-sm cursor-pointer icon-style pr-2">
-                        <option value="google" class="bg-gray-800 text-white">Google</option>
-                        <option value="brave" class="bg-gray-800 text-white">Brave</option>
-                        <option value="duckduckgo" class="bg-gray-800 text-white">DuckDuckGo</option>
-                    </select>
-                    <!-- Search button -->
-                    <button id="searchButton" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full text-sm font-semibold transition-colors">Go</button>
+<body class="theme-midnight bg-pattern-2 min-h-screen">
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="card rounded-2xl p-6 max-w-md w-full glass-effect">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-accent">⚙️ Settings</h2>
+                    <button id="closeSettings" class="text-gray-400 hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Theme</label>
+                        <select id="themeSelect" class="w-full input-glass rounded-lg px-3 py-2">
+                            <option value="theme-midnight">🌙 Midnight</option>
+                            <option value="theme-matrix">💚 Matrix</option>
+                            <option value="theme-cyberpunk">💜 Cyberpunk</option>
+                            <option value="theme-galaxy">🌌 Galaxy</option>
+                            <option value="theme-sunset">🌇 Sunset</option>
+                            <option value="theme-mint">🌿 Mint</option>
+                            <option value="theme-monokai">🖤 Monokai</option>
+                            <option value="theme-aurora">🌈 Aurora</option>
+                            <option value="theme-ocean">🌊 Ocean</option>
+                            <option value="theme-black">☀️ Light</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Background Pattern</label>
+                        <select id="backgroundSelect" class="w-full input-glass rounded-lg px-3 py-2">
+                            <option value="">None</option>
+                            <option value="bg-pattern-1">Grid</option>
+                            <option value="bg-pattern-2">Dots</option>
+                            <option value="bg-pattern-3">Diagonal</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Your Name</label>
+                        <input id="userName" type="text" placeholder="Enter your name"
+                            class="w-full input-glass rounded-lg px-3 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Default Search Engine</label>
+                        <select id="defaultSearchEngine" class="w-full input-glass rounded-lg px-3 py-2">
+                            <option value="google">🔍 Google</option>
+                            <option value="brave">🦁 Brave</option>
+                            <option value="duckduckgo">🦆 DuckDuckGo</option>
+                            <option value="bing">Ⓜ️ Bing</option>
+                        </select>
+                    </div>
+
+                    <button id="saveSettings"
+                        class="w-full bg-accent hover:bg-purple-600 text-white rounded-lg py-2 px-4 font-semibold transition-all transform hover:scale-105">
+                        💾 Save Settings
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="flex items-center gap-2 text-sm text-gray-400">
-            <!-- Theme toggle button -->
-            <button id="themeToggle" class="p-2 rounded-md header cursor-pointer hover:bg-purple-500 transition-colors" title="Toggle Theme">
-                <span class="text-white font-semibold">Dashy-Docs</span>
-            </button>
-            <div class="flex items-center gap-2 ml-4">
-                 <!-- Wallpaper change button -->
-                 <button id="wallpaperToggle" class="p-2 rounded-md header cursor-pointer hover:bg-purple-500 transition-colors" title="Change Wallpaper">
-                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                        <path d="M12.804 14q.427-.674.802-1.399l-.364-.258a.49.49 0 0 0-.256.027 1.488 1.488 0 0 1-.502.164l-.538-.724a1.5 1.5 0 0 0-.494-.367c-.203-.09-.307-.267-.214-.515.203-.54.67-.84.98-.99.014-.007.029-.011.04-.017l.006-.003a.035.035 0 0 0 .01-.005l.004-.002.001-.001a.066.066 0 0 0 .01-.005l.002-.001L14.73 4h-.233a2 2 0 0 0-1.996 1.768L8.643 14h6.052c.264 0 .5-.213.5-.477v-.252a.5.5 0 0 0-.17-.375z"/>
-                        <path fill-rule="evenodd" d="M11.5 1h-7A2.5 2.5 0 0 0 2 3.5v9A2.5 2.5 0 0 0 4.5 15h7a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 11.5 1zM3 3.5A.5.5 0 0 1 3.5 3h7A.5.5 0 0 1 11 3.5v9a.5.5 0 0 1-.5.5h-7A.5.5 0 0 1 3 12.5v-9z"/>
+    <!-- Header Section -->
+    <header class="header-glass sticky top-0 z-40 px-4 md:px-8 py-4">
+        <div class="flex flex-col lg:flex-row justify-between items-center gap-4">
+            <!-- Left section with time and greeting -->
+            <div class="flex flex-col items-center lg:items-start">
+                <div class="flex items-center gap-4 mb-2">
+                    <h1 class="text-3xl font-bold text-accent animate-pulse-slow">🚀 CandyMan Pro</h1>
+                    <div class="flex gap-2">
+                        <div class="w-2 h-2 rounded-full status-online animate-pulse"></div>
+                        <div class="w-2 h-2 rounded-full status-warning animate-pulse" style="animation-delay: 0.5s;">
+                        </div>
+                        <div class="w-2 h-2 rounded-full status-offline animate-pulse" style="animation-delay: 1s;">
+                        </div>
+                    </div>
+                </div>
+                <div id="greeting" class="text-lg font-medium opacity-80"></div>
+                <div id="clock" class="text-4xl md:text-5xl font-mono font-bold text-accent animate-glow"></div>
+                <div id="date" class="text-sm opacity-60 font-medium"></div>
+            </div>
+
+            <!-- Center search section -->
+            <div class="relative w-full max-w-2xl">
+                <div class="relative">
+                    <input id="searchInput" type="text" placeholder="Search anything..."
+                        class="w-full input-glass rounded-2xl px-6 py-4 pl-12 pr-20 text-lg focus:ring-2 focus:ring-purple-500">
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-60" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <select id="searchEngine"
+                        class="absolute right-24 top-1/2 -translate-y-1/2 bg-transparent border-none text-sm opacity-60">
+                        <option value="google">Google</option>
+                        <option value="brave">Brave</option>
+                        <option value="duckduckgo">DuckDuckGo</option>
+                        <option value="bing">Bing</option>
+                    </select>
+                    <button id="searchBtn"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-accent hover:bg-purple-600 text-white rounded-xl px-4 py-2 transition-all transform hover:scale-105">
+                        Search
+                    </button>
+                </div>
+                <div id="searchSuggestions"
+                    class="search-suggestions absolute top-full left-0 right-0 rounded-2xl mt-2 border border-white border-opacity-10 hidden">
+                </div>
+            </div>
+
+            <!-- Right section with controls -->
+            <div class="flex items-center gap-3">
+                <div id="weatherWidget" class="weather-card rounded-xl p-3 hidden md:block">
+                    <div class="text-center">
+                        <div id="temp" class="text-xl font-bold">--°</div>
+                        <div id="weather" class="text-xs opacity-60">Loading...</div>
+                    </div>
+                </div>
+
+                <button id="settingsBtn" class="card rounded-xl p-3 hover:bg-accent transition-all" title="Settings">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
                 </button>
-                <span class="p-2 rounded-md header cursor-pointer" title="Layout">
-                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M1.5 3A1.5 1.5 0 0 0 0 4.5v3A1.5 1.5 0 0 0 1.5 9h3A1.5 1.5 0 0 0 6 7.5v-3A1.5 1.5 0 0 0 4.5 3h-3zM10.5 3A1.5 1.5 0 0 0 9 4.5v3A1.5 1.5 0 0 0 10.5 9h3A1.5 1.5 0 0 0 15 7.5v-3A1.5 1.5 0 0 0 13.5 3h-3zM1.5 10A1.5 1.5 0 0 0 0 11.5v3A1.5 1.5 0 0 0 1.5 16h3A1.5 1.5 0 0 0 6 14.5v-3A1.5 1.5 0 0 0 4.5 10h-3zM10.5 10A1.5 1.5 0 0 0 9 11.5v3A1.5 1.5 0 0 0 10.5 16h3A1.5 1.5 0 0 0 15 14.5v-3A1.5 1.5 0 0 0 13.5 10h-3z"/>
+
+                <button id="layoutBtn" class="card rounded-xl p-3 hover:bg-accent transition-all" title="Toggle Layout">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                        </path>
                     </svg>
-                </span>
-                <span class="p-2 rounded-md header cursor-pointer" title="Item Size">
-                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M12.5 14a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM11 1.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm.5 3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM12 11.5a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12.5a.5.5 0 0 1-.5-.5zM3.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-15a.5.5 0 0 1 .5-.5h2z"/>
-                    </svg>
-                </span>
-                <span class="p-2 rounded-md header cursor-pointer" title="Config">
-                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V1.5zM2 2v12h12V2H2zm2 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1zm0 3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"/>
-                    </svg>
-                </span>
-                <span class="p-2 rounded-md header cursor-pointer" title="Log in">
-                    <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M.5 1a.5.5 0 0 0-.5.5v13a.5.5 0 0 0 .5.5h15a.5.5 0 0 0 .5-.5v-13a.5.5 0 0 0-.5-.5H.5zM1 2h14v12H1V2z"/>
-                    </svg>
-                </span>
+                </button>
             </div>
+        </div>
+
+        <!-- Quote of the day -->
+        <div class="text-center mt-4">
+            <div id="quote" class="text-sm italic opacity-70 max-w-2xl mx-auto"></div>
         </div>
     </header>
 
-    <!-- Main Dashboard Content -->
-    <main id="mainContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Notification Area -->
+    <div id="notifications" class="fixed top-20 right-4 z-50 space-y-2"></div>
 
-        <!-- Code Analysis & Monitoring Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-purple-500"></span>
-                <span class="text-sm bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                    Code Analysis & Monitoring
-                  </span>
-                  
-                  
-                <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
+    <!-- Main Content -->
+    <main class="px-4 md:px-8 py-6">
+        <!-- Quick Stats Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-accent">42</div>
+                        <div class="text-sm opacity-60">Services</div>
+                    </div>
+                    <div class="text-2xl">🚀</div>
                 </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Card with a link to Snyk -->
-                <a href="https://snyk.io" class="group block card rounded-lg p-4 text-center" target="_blank">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🛡️</span>
-                        <span class="text-sm">Snyk</span>
-                    </div>
-                </a>
-                <!-- Card with a link to Code Beat -->
-                <a href="https://codebeat.co/" class="group block card rounded-lg p-4 text-center" target="_blank">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🎵</span>
-                        <span class="text-sm">Code Beat</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🔍</span>
-                        <span class="text-sm">Is Maintained</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📦</span>
-                        <span class="text-sm">FOSSA</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📈</span>
-                        <span class="text-sm">Sonatype</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🕵️</span>
-                        <span class="text-sm">DeepSource</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🔬</span>
-                        <span class="text-sm">DeepScan</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">✅</span>
-                        <span class="text-sm">LGTM</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">💡</span>
-                        <span class="text-sm">CodeSense</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">👤</span>
-                        <span class="text-sm">David-DM</span>
-                    </div>
-                </a>
             </div>
-        </section>
+            <div class="card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-2xl font-bold text-green-400">98%</div>
+                        <div class="text-sm opacity-60">Uptime</div>
+                    </div>
+                    <div class="text-2xl">📊</div>
+                </div>
+            </div>
+            <div class="card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div id="cpuUsage" class="text-2xl font-bold text-blue-400">--</div>
+                        <div class="text-sm opacity-60">CPU</div>
+                    </div>
+                    <div class="text-2xl">💻</div>
+                </div>
+                <div class="mt-2 bg-gray-700 rounded-full h-1">
+                    <div id="cpuBar" class="usage-bar w-0"></div>
+                </div>
+            </div>
+            <div class="card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div id="memUsage" class="text-2xl font-bold text-yellow-400">--</div>
+                        <div class="text-sm opacity-60">Memory</div>
+                    </div>
+                    <div class="text-2xl">🧠</div>
+                </div>
+                <div class="mt-2 bg-gray-700 rounded-full h-1">
+                    <div id="memBar" class="usage-bar w-0"></div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Project Stats & Metrics Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-green-500"></span>
-                <span class="text-sm">Project Stats & Metrics</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📊</span>
-                        <span class="text-sm">Repo Analytics</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">👁️</span>
-                        <span class="text-sm">Visual Source</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">⭐</span>
-                        <span class="text-sm">StarTrack</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🌳</span>
-                        <span class="text-sm">GitFlowChart</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🧠</span>
-                        <span class="text-sm">GitMemory</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🦉</span>
-                        <span class="text-sm">Cauldron</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-        
-        <!-- Deployment & Monitoring Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-blue-500"></span>
-                <span class="text-sm">Deployment & Monitoring</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Card with a link to Netlify -->
-                <a href="https://www.netlify.com/" class="group block card rounded-lg p-4 text-center" target="_blank">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">☁️</span>
-                        <span class="text-sm">Netlify</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📟</span>
-                        <span class="text-sm">MeerCode</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🟢</span>
-                        <span class="text-sm">Status Page</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🌍</span>
-                        <span class="text-sm">GitLocalize</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🗺️</span>
-                        <span class="text-sm">Viezly</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">👨‍💻</span>
-                        <span class="text-sm">VS Code</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-        
-        <!-- Cloud Services Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-cyan-500"></span>
-                <span class="text-sm">Cloud Services</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">☁️</span>
-                        <span class="text-sm">AWS</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🌐</span>
-                        <span class="text-sm">GCP</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">💧</span>
-                        <span class="text-sm">Azure</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-        
-        <!-- AI / ML Tools Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-pink-500"></span>
-                <span class="text-sm">AI / ML Tools</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🧠</span>
-                        <span class="text-sm">TensorFlow</span>
-                    </div>
-                </a>
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🤖</span>
-                        <span class="text-sm">PyTorch</span>
-                    </div>
-                </a>
-            </div>
-        </section>
+        <!-- Dashboard Sections -->
+        <div id="dashboardGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-        <!-- Socials & Review Sites Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-yellow-500"></span>
-                <span class="text-sm">Socials & Review Sites</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">⚡</span> DailyUsage
+                    </h2>
+                    <div class="flex gap-1">
+                        <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🎯</span>
-                        <span class="text-sm">Product Hunt</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">💰</span>
-                        <span class="text-sm">Bounty Source</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">💡</span>
-                        <span class="text-sm">Alternative To</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📚</span>
-                        <span class="text-sm">StackShare</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📝</span>
-                        <span class="text-sm">Slant</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🤝</span>
-                        <span class="text-sm">GH Sponsors</span>
-                    </div>
-                </a>
-            </div>
-        </section>
-        
-        <!-- Environments Section -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-red-500"></span>
-                <span class="text-sm">Environments</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://cliq.zoho.com" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">💬</div>
+                        <div class="text-sm font-medium">Zoho Cliq</div>
+                        <div class="text-xs opacity-60">Team Chat</div>
+                    </a>
+                
+                    <a href="https://mail.zoho.com" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📧</div>
+                        <div class="text-sm font-medium">Zoho Mail</div>
+                        <div class="text-xs opacity-60">Business Mail</div>
+                    </a>
+                
+                    <a href="https://v-global-tech.atlassian.net/" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📋</div>
+                        <div class="text-sm font-medium">Jira</div>
+                        <div class="text-xs opacity-60">Project Mgmt</div>
+                    </a>
                 </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🧪</span>
-                        <span class="text-sm">DEV</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🚀</span>
-                        <span class="text-sm">LIVE</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">📄</span>
-                        <span class="text-sm">DOCS SITE</span>
-                    </div>
-                </a>
-                <!-- Card, placeholder link -->
-                <a href="#" class="group block card rounded-lg p-4 text-center">
-                    <div class="flex flex-col items-center">
-                        <span class="text-2xl mb-2">🌐</span>
-                        <span class="text-sm">GITHUB</span>
-                    </div>
-                </a>
             </div>
-        </section>
-        
-        <!-- Other Sections -->
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
-                <span class="text-sm">Repo</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Add cards here -->
-            </div>
-        </section>
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
-                <span class="text-sm">Usage Docs</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Add cards here -->
-            </div>
-        </section>
-        <section class="section-card">
-            <h2 class="flex items-center text-sm font-bold text-gray-300 p-2 rounded-t-lg bg-[#333] mb-4">
-                <span class="w-2 h-6 mr-3 rounded-md bg-gray-500"></span>
-                <span class="text-sm">Feature Docs</span>
-                 <div class="ml-auto flex gap-2">
-                    <button class="sort-up" title="Move up">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V3.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 3.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg>
-                    </button>
-                    <button class="sort-down" title="Move down">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v7.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 12.293V4.5a.5.5 0 0 1 .5-.5z"/>
-                        </svg>
-                    </button>
-                    <button class="toggle-cards" title="Toggle visibility">
-                        <svg class="icon-style" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </button>
-                </div>
-            </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-4 section-content">
-                <!-- Add cards here -->
-            </div>
-        </section>
 
+            <!-- Development Tools Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">⚡</span> Dev Tools
+                    </h2>
+                    <div class="flex gap-1">
+                        <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://github.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🐙</div>
+                        <div class="text-sm font-medium">GitHub</div>
+                        <div class="text-xs opacity-60">Code repos</div>
+                    </a>
+                    <a href="https://roadmap.sh" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🦊</div>
+                        <div class="text-sm font-medium">Roadmap</div>
+                        <div class="text-xs opacity-60">SoftDev</div>
+                    </a>
+                    <a href="https://stackoverflow.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📚</div>
+                        <div class="text-sm font-medium">Stack Overflow</div>
+                        <div class="text-xs opacity-60">Q&A</div>
+                    </a>
+                    <a href="https://replit.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🖊️</div>
+                        <div class="text-sm font-medium">Replit</div>
+                        <div class="text-xs opacity-60">SoftDev</div>
+                    </a>
+                    <a href="https://app.netlify.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">⚗️</div>
+                        <div class="text-sm font-medium">Netlify</div>
+                        <div class="text-xs opacity-60">SoftDev</div>
+                    </a>
+                    <a href="https://studio.firebase.google.com/"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">⚙️</div>
+                        <div class="text-sm font-medium">FireStudio</div>
+                        <div class="text-xs opacity-60">SoftDev</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Homelab Services Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">🏠</span> Dev-Utils
+                    </h2>
+                    <div class="flex gap-1">
+                        <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://docker.com" class="app-card card rounded-lg p-3 text-center hover:animate-float">
+                        <div class="text-2xl mb-2">🐳</div>
+                        <div class="text-sm font-medium">Docker</div>
+                        <div class="text-xs opacity-60 flex items-center justify-center gap-1">
+                            <div class="w-2 h-2 rounded-full status-online"></div>
+                            Online
+                        </div>
+                    </a>
+                    <a href="https://temp-mail.org"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float">
+                        <div class="text-2xl mb-2">📊</div>
+                        <div class="text-sm font-medium">Temp Mail</div>
+                        <div class="text-xs opacity-60 flex items-center justify-center gap-1">
+                            <div class="w-2 h-2 rounded-full status-online"></div>
+                            Online
+                        </div>
+                    </a>
+                    <a href="https://mail.proton.me"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float">
+                        <div class="text-2xl mb-2">📁</div>
+                        <div class="text-sm font-medium">ProtonMail</div>
+                        <div class="text-xs opacity-60 flex items-center justify-center gap-1">
+                            <div class="w-2 h-2 rounded-full status-warning"></div>
+                            Warning
+                        </div>
+                    </a>
+                    <a href="https://mail.hostinger.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float">
+                        <div class="text-2xl mb-2">🌚</div>
+                        <div class="text-sm font-medium">Hostinger</div>
+                        <div class="text-xs opacity-60 flex items-center justify-center gap-1">
+                            <div class="w-2 h-2 rounded-full status-online"></div>
+                            Online
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Monitoring Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">📈</span> Ai-Tool
+                    </h2>
+                    <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-1">
+
+                    <a href="https://gemini.google.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🔍</div>
+                        <div class="text-sm font-medium">Google Gemini</div>
+                        <div class="text-xs opacity-60">AI Assistant</div>
+                    </a>
+
+                    <a href="https://grok.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <div class="text-sm font-medium">Grok (xAI)</div>
+                        <div class="text-xs opacity-60">Chat AI</div>
+                    </a>
+
+                    <a href="https://claude.ai" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🤖</div>
+                        <div class="text-sm font-medium">Claude</div>
+                        <div class="text-xs opacity-60">AI Writing</div>
+                    </a>
+
+                    <a href="https://chatgpt.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">✨</div>
+                        <div class="text-sm font-medium">ChatGPT</div>
+                        <div class="text-xs opacity-60">Coding + Q&A</div>
+                    </a>
+
+                    <a href="https://you.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🌐</div>
+                        <div class="text-sm font-medium">You.com</div>
+                        <div class="text-xs opacity-60">AI Search</div>
+                    </a>
+
+                    <a href="https://perplexity.ai" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🧭</div>
+                        <div class="text-sm font-medium">Perplexity</div>
+                        <div class="text-xs opacity-60">AI Search</div>
+                    </a>
+                    <a href="https://github.com/copilot"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">💻</div>
+                        <div class="text-sm font-medium">GitHub Copilot</div>
+                        <div class="text-xs opacity-60">Code Assistant</div>
+                    </a>
+                    <a href="https://phind.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🔎</div>
+                        <div class="text-sm font-medium">Phind</div>
+                        <div class="text-xs opacity-60">AI for Devs</div>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Social & Communication Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">💬</span> Social
+                    </h2>
+                    <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://discord.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">💜</div>
+                        <div class="text-sm font-medium">Discord</div>
+                        <div class="text-xs opacity-60">Chat</div>
+                    </a>
+                    <a href="https://slack.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">💼</div>
+                        <div class="text-sm font-medium">Slack</div>
+                        <div class="text-xs opacity-60">Work chat</div>
+                    </a>
+                    <a href="https://reddit.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🤖</div>
+                        <div class="text-sm font-medium">Reddit</div>
+                        <div class="text-xs opacity-60">Community</div>
+                    </a>
+                    <a href="https://twitter.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🐦</div>
+                        <div class="text-sm font-medium">Twitter</div>
+                        <div class="text-xs opacity-60">Social</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Entertainment Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">🎬</span> Entertainment
+                    </h2>
+                    <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://www.google.com/search?q=9anime" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🍥</div>
+                        <div class="text-sm font-medium">9Anime</div>
+                        <div class="text-xs opacity-60">Anime Streaming</div>
+                    </a>
+                
+                    <a href="https://www.google.com/search?q=aniwatch" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🎌</div>
+                        <div class="text-sm font-medium">aniwatch</div>
+                        <div class="text-xs opacity-60">Anime</div>
+                    </a>
+                
+                    <a href="https://www.google.com/search?q=everythingmoe.com" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🌸</div>
+                        <div class="text-sm font-medium">Anime Search</div>
+                        <div class="text-xs opacity-60">Anime + Manga</div>
+                    </a>
+                
+                    <a href="https://www.tubitv.com" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📺</div>
+                        <div class="text-sm font-medium">Tubi TV</div>
+                        <div class="text-xs opacity-60">Free Movies + Anime</div>
+                    </a>
+                
+                    <!-- General Free Video Platforms -->
+                    <a href="https://www.youtube.com" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">▶️</div>
+                        <div class="text-sm font-medium">YouTube</div>
+                        <div class="text-xs opacity-60">Videos & Anime Clips</div>
+                    </a>
+                
+                    <a href="https://www.google.com/search?q=soap2day" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🦚</div>
+                        <div class="text-sm font-medium">Free Movie</div>
+                        <div class="text-xs opacity-60">Free TV & Movies</div>
+                    </a>
+                
+                    <a href="https://www.google.com/search?q=tamilyogi" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📡</div>
+                        <div class="text-sm font-medium">tamil dubbed</div>
+                        <div class="text-xs opacity-60">Movies</div>
+                    </a>
+                
+                    <a href="https://www.google.com/search?q=movieda" class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🎭</div>
+                        <div class="text-sm font-medium">Viki</div>
+                        <div class="text-xs opacity-60">Asian Dramas & Anime</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Productivity Section -->
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">📋</span> Productivity
+                    </h2>
+                    <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-4">
+                    <a href="https://notion.so" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">📝</div>
+                        <div class="text-sm font-medium">Notion</div>
+                        <div class="text-xs opacity-60">Notes</div>
+                    </a>
+                    <a href="https://trello.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">📊</div>
+                        <div class="text-sm font-medium">Trello</div>
+                        <div class="text-xs opacity-60">Tasks</div>
+                    </a>
+                    <a href="https://calendar.google.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📅</div>
+                        <div class="text-sm font-medium">Calendar</div>
+                        <div class="text-xs opacity-60">Schedule</div>
+                    </a>
+                    <a href="https://drive.google.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">☁️</div>
+                        <div class="text-sm font-medium">Drive</div>
+                        <div class="text-xs opacity-60">Storage</div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div
+                    class="section-header flex items-center justify-between p-4 border-b border-white border-opacity-10">
+                    <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                        <span class="text-xl">📋</span> Job Portal
+                    </h2>
+                    <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="section-content grid grid-cols-2 gap-3 p-1">
+
+                    <!-- Global Job Portals -->
+                    <a href="https://www.linkedin.com/jobs"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">💼</div>
+                        <div class="text-sm font-medium">LinkedIn</div>
+                        <div class="text-xs opacity-60">Global Jobs</div>
+                    </a>
+
+                    <a href="https://www.indeed.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🌍</div>
+                        <div class="text-sm font-medium">Indeed</div>
+                        <div class="text-xs opacity-60">Jobs Worldwide</div>
+                    </a>
+
+                    <a href="https://www.glassdoor.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🔍</div>
+                        <div class="text-sm font-medium">Glassdoor</div>
+                        <div class="text-xs opacity-60">Jobs + Reviews</div>
+                    </a>
+
+                    <a href="https://www.monster.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">👹</div>
+                        <div class="text-sm font-medium">Monster</div>
+                        <div class="text-xs opacity-60">Global Careers</div>
+                    </a>
+
+                    <a href="https://www.ziprecruiter.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📬</div>
+                        <div class="text-sm font-medium">ZipRecruiter</div>
+                        <div class="text-xs opacity-60">Smart Matching</div>
+                    </a>
+
+                    <a href="https://wellfound.com" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">🚀</div>
+                        <div class="text-sm font-medium">Wellfound (AngelList)</div>
+                        <div class="text-xs opacity-60">Startup Jobs</div>
+                    </a>
+
+                    <!-- India Focused -->
+                    <a href="https://www.naukri.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🇮🇳</div>
+                        <div class="text-sm font-medium">Naukri</div>
+                        <div class="text-xs opacity-60">India Jobs</div>
+                    </a>
+
+                    <a href="https://www.foundit.in"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🔎</div>
+                        <div class="text-sm font-medium">Foundit (Monster India)</div>
+                        <div class="text-xs opacity-60">India Careers</div>
+                    </a>
+
+                    <a href="https://www.timesjobs.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">📰</div>
+                        <div class="text-sm font-medium">TimesJobs</div>
+                        <div class="text-xs opacity-60">India Jobs</div>
+                    </a>
+
+                    <a href="https://www.iimjobs.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">🎓</div>
+                        <div class="text-sm font-medium">IIMJobs</div>
+                        <div class="text-xs opacity-60">Premium India</div>
+                    </a>
+
+                    <a href="https://www.hirist.com"
+                        class="app-card card rounded-lg p-3 text-center hover:animate-float" target="_blank">
+                        <div class="text-2xl mb-2">💻</div>
+                        <div class="text-sm font-medium">Hirist</div>
+                        <div class="text-xs opacity-60">Tech Jobs India</div>
+                    </a>
+
+                    <a href="https://cutshort.io" class="app-card card rounded-lg p-3 text-center hover:animate-float"
+                        target="_blank">
+                        <div class="text-2xl mb-2">✂️</div>
+                        <div class="text-sm font-medium">CutShort</div>
+                        <div class="text-xs opacity-60">Startups India</div>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="section-header flex items-center justify-between p-4 border-b border-white/10 mt-4">
+            <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                <span class="text-xl">🔐</span> Password Generator
+            </h2>
+            <button class="collapse-btn opacity-60 hover:opacity-100 transition-opacity" data-collapse="#pwGenBody">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="pwGenBody" class="section-content p-4 grid gap-3">
+            <div class="grid grid-cols-2 gap-3 items-center">
+                <label class="opacity-80 text-sm">Length</label>
+                <div class="flex items-center gap-2">
+                    <input id="pwLen" type="range" min="6" max="64" value="16" class="w-full">
+                    <span id="pwLenVal" class="w-8 text-right text-sm opacity-70">16</span>
+                </div>
+
+                <label class="opacity-80 text-sm">Character sets</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="flex items-center gap-2 text-sm"><input id="pwLower" type="checkbox" checked>
+                        a–z</label>
+                    <label class="flex items-center gap-2 text-sm"><input id="pwUpper" type="checkbox" checked>
+                        A–Z</label>
+                    <label class="flex items-center gap-2 text-sm"><input id="pwNums" type="checkbox" checked>
+                        0–9</label>
+                    <label class="flex items-center gap-2 text-sm"><input id="pwSyms" type="checkbox"> !@#$…</label>
+                    <label class="flex items-center gap-2 text-sm col-span-2"><input id="pwNoAmb" type="checkbox">
+                        exclude ambiguous (1lI0O)</label>
+                </div>
+            </div>
+
+            <div class="flex gap-2">
+                <input id="pwOut" class="flex-1 card rounded-lg px-3 py-2 font-mono text-sm" readonly>
+                <button id="pwCopy" class="card rounded-lg px-3 py-2 text-sm">Copy</button>
+                <button id="pwGen" class="card rounded-lg px-3 py-2 text-sm">Generate</button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="pwStrengthBar" class="h-full w-0 rounded-full"></div>
+                </div>
+                <span id="pwStrengthText" class="text-xs opacity-70">strength</span>
+            </div>
+        </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-header flex items-center justify-between p-4 border-b border-white/10">
+                <h2 class="text-lg font-bold text-accent flex items-center gap-2">
+                    <span class="text-xl">🌳</span> Tree View
+                </h2>
+                <div class="flex items-center gap-2">
+                    <button id="treeExpand" class="card rounded-lg px-2 py-1 text-xs">Expand all</button>
+                    <button id="treeCollapse" class="card rounded-lg px-2 py-1 text-xs">Collapse all</button>
+                </div>
+            </div>
+
+            <div class="section-content p-4">
+                <div id="treeRoot" class="text-sm"></div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Feed -->
+        <div class="mt-8">
+            <h3 class="text-xl font-bold text-accent mb-4 flex items-center gap-2">
+                <span class="text-xl">🔄</span> Recent Activity
+            </h3>
+            <div class="space-y-3">
+                <div class="notification rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full status-online"></div>
+                    <div class="flex-1">
+                        <div class="font-medium">Portainer updated successfully</div>
+                        <div class="text-sm opacity-60">2 minutes ago</div>
+                    </div>
+                </div>
+                <div class="notification rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full status-warning"></div>
+                    <div class="flex-1">
+                        <div class="font-medium">High CPU usage detected on server-01</div>
+                        <div class="text-sm opacity-60">15 minutes ago</div>
+                    </div>
+                </div>
+                <div class="notification rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full status-online"></div>
+                    <div class="flex-1">
+                        <div class="font-medium">Backup completed successfully</div>
+                        <div class="text-sm opacity-60">1 hour ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="text-center py-8 opacity-60">
+        <div class="text-sm">Made with ❤️ using CandyScooby Pro • Version 2.0</div>
+        <div class="text-xs mt-2">Last updated: <span id="lastUpdated"></span></div>
+    </footer>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Function to toggle between dark and light themes
-            const themeToggle = document.getElementById('themeToggle');
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('light-theme');
-            });
+            (() => {
+                const data = {
+                    "Work": {
+                        "Projects": {
+                            "OSINT Dashboard": { "frontend": {}, "backend": {} },
+                            "Wails URL Checker": {}
+                        },
+                        "Docs": { "Design.md": null, "Roadmap.md": null }
+                    },
+                    "Personal": {
+                        "Finance": { "2025": {}, "2024": {} },
+                        "Health": { "Workout Plan.pdf": null }
+                    },
+                    "Links": {
+                        "GitHub": "https://github.com/",
+                        "ChatGPT": "https://chat.openai.com/",
+                        "HN": "https://news.ycombinator.com/"
+                    }
+                };
 
-            // Function to handle external search
-            const searchInputExternal = document.getElementById('searchInputExternal');
-            const searchEngine = document.getElementById('searchEngine');
-            const searchButton = document.getElementById('searchButton');
+                const root = document.getElementById('treeRoot');
 
-            const searchEngines = {
-                google: 'https://www.google.com/search?q=',
-                brave: 'https://search.brave.com/search?q=',
-                duckduckgo: 'https://duckduckgo.com/?q='
-            };
-
-            const performSearch = () => {
-                const query = searchInputExternal.value.trim();
-                if (query) {
-                    const engine = searchEngine.value;
-                    const url = searchEngines[engine] + encodeURIComponent(query);
-                    window.open(url, '_blank');
+                function nodeIsLeaf(v) {
+                    return v === null || typeof v === 'string';
                 }
-            };
-            
-            // Trigger search on button click
-            searchButton.addEventListener('click', performSearch);
-            
-            // Trigger search on Enter key press
-            searchInputExternal.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    performSearch();
+
+                function makeNode(label, value) {
+                    if (nodeIsLeaf(value)) {
+                        const a = document.createElement('a');
+                        a.className = 'block pl-7 py-1 hover:underline truncate';
+                        a.textContent = label;
+                        if (typeof value === 'string') { a.href = value; a.target = '_blank'; }
+                        return a;
+                    }
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'group';
+
+                    const header = document.createElement('button');
+                    header.type = 'button';
+                    header.className = 'flex items-center w-full py-1 px-2 rounded hover:bg-white/5 focus:outline-none focus:ring-1 focus:ring-white/20';
+                    header.setAttribute('aria-expanded', 'false');
+
+                    // caret
+                    const caret = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    caret.setAttribute('viewBox', '0 0 24 24');
+                    caret.setAttribute('class', 'w-4 h-4 mr-2 transition-transform');
+                    caret.innerHTML = '<path fill="currentColor" d="M9 6l6 6-6 6"/>';
+                    header.appendChild(caret);
+
+                    const text = document.createElement('span');
+                    text.textContent = label;
+                    header.appendChild(text);
+
+                    const body = document.createElement('div');
+                    body.className = 'ml-6 border-l border-white/10 pl-2 hidden';
+
+                    header.addEventListener('click', () => {
+                        const open = body.classList.toggle('hidden') === false;
+                        header.setAttribute('aria-expanded', String(open));
+                        caret.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
+                    });
+
+                    // children
+                    Object.entries(value).forEach(([k, v]) => {
+                        body.appendChild(makeNode(k, v));
+                    });
+
+                    wrapper.appendChild(header);
+                    wrapper.appendChild(body);
+                    return wrapper;
                 }
-            });
 
-            // --- NEW FEATURES ---
-
-            // Dynamic greeting functionality
-            const greetingElement = document.getElementById('greeting');
-            function updateGreeting() {
-                const now = new Date();
-                const hours = now.getHours();
-                let greeting = '';
-                if (hours < 12) {
-                    greeting = 'Good morning';
-                } else if (hours < 18) {
-                    greeting = 'Good afternoon';
-                } else {
-                    greeting = 'Good evening';
+                function buildTree(obj, target) {
+                    target.innerHTML = '';
+                    Object.entries(obj).forEach(([k, v]) => target.appendChild(makeNode(k, v)));
                 }
-                greetingElement.textContent = `${greeting}, Prasanna.`;
-            }
-            updateGreeting();
 
-            // Clock functionality
-            const clockElement = document.getElementById('clock');
-            function updateClock() {
-                const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-            }
-            setInterval(updateClock, 1000);
+                function setAll(open) {
+                    root.querySelectorAll('.group').forEach(g => {
+                        const header = g.querySelector('button[aria-expanded]');
+                        const body = g.children[1];
+                        if (!header || !body) return;
+                        if (open) {
+                            body.classList.remove('hidden');
+                            header.setAttribute('aria-expanded', 'true');
+                            const caret = header.querySelector('svg'); if (caret) caret.style.transform = 'rotate(90deg)';
+                        } else {
+                            body.classList.add('hidden');
+                            header.setAttribute('aria-expanded', 'false');
+                            const caret = header.querySelector('svg'); if (caret) caret.style.transform = 'rotate(0deg)';
+                        }
+                    });
+                }
+
+                buildTree(data, root);
+                document.getElementById('treeExpand').addEventListener('click', () => setAll(true));
+                document.getElementById('treeCollapse').addEventListener('click', () => setAll(false));
+                const el = id => document.getElementById(id);
+                const len = el('pwLen'), lenVal = el('pwLenVal'), out = el('pwOut');
+                const lower = el('pwLower'), upper = el('pwUpper'), nums = el('pwNums'), syms = el('pwSyms'), noAmb = el('pwNoAmb');
+                const genBtn = el('pwGen'), copyBtn = el('pwCopy');
+                const bar = el('pwStrengthBar'), label = el('pwStrengthText');
+
+                const amb = new Set(['1', 'l', 'I', '0', 'O']);
+                function charset() {
+                    let s = '';
+                    if (lower.checked) s += 'abcdefghijklmnopqrstuvwxyz';
+                    if (upper.checked) s += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    if (nums.checked) s += '0123456789';
+                    if (syms.checked) s += '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+                    if (noAmb.checked) s = [...s].filter(c => !amb.has(c)).join('');
+                    return s;
+                }
+
+                function cryptoRandom(max) {
+                    // 0..max-1 using rejection sampling (avoid modulo bias)
+                    const arr = new Uint32Array(1);
+                    const limit = Math.floor(0xFFFFFFFF / max) * max;
+                    let r;
+                    do { crypto.getRandomValues(arr); r = arr[0]; } while (r >= limit);
+                    return r % max;
+                }
+
+                function generate() {
+                    const chars = charset();
+                    const L = parseInt(len.value, 10);
+                    if (!chars.length) { out.value = ''; updateStrength(); return; }
+
+                    let pw = '';
+                    for (let i = 0; i < L; i++) {
+                        pw += chars[cryptoRandom(chars.length)];
+                    }
+                    out.value = pw;
+                    updateStrength();
+                }
+
+                function updateStrength() {
+                    const L = out.value.length;
+                    const sets = [lower, upper, nums, syms].filter(x => x.checked).length;
+                    // very rough score: mix length & diversity
+                    let score = 0;
+                    if (L >= 8) score += 1;
+                    if (L >= 12) score += 1;
+                    if (L >= 16) score += 1;
+                    if (L >= 24) score += 1;
+                    score += Math.max(0, sets - 1); // +0..+3
+
+                    const pct = Math.min(100, (score / 7) * 100);
+                    bar.style.width = pct + '%';
+                    bar.className = 'h-full rounded-full ' + (
+                        pct < 35 ? 'bg-red-500' : pct < 65 ? 'bg-yellow-500' : 'bg-green-500'
+                    );
+                    label.textContent = pct < 35 ? 'weak' : pct < 65 ? 'medium' : 'strong';
+                }
+
+                len.addEventListener('input', () => { lenVal.textContent = len.value; });
+                genBtn.addEventListener('click', generate);
+                copyBtn.addEventListener('click', async () => {
+                    if (!out.value) return;
+                    try { await navigator.clipboard.writeText(out.value); copyBtn.textContent = 'Copied!'; setTimeout(() => copyBtn.textContent = 'Copy', 900); } catch { }
+                });
+
+                // collapse toggles (re-usable)
+                document.querySelectorAll('.collapse-btn').forEach(btn => {
+                    const targetSel = btn.getAttribute('data-collapse');
+                    if (!targetSel) return;
+                    btn.addEventListener('click', () => {
+                        const tgt = document.querySelector(targetSel);
+                        if (tgt) tgt.classList.toggle('hidden');
+                        btn.classList.toggle('rotate-180');
+                    });
+                });
+
+                generate(); // initial
+            })();
+
+
+
+
+
+
+
+
+
+
+        // Configuration and State Management
+        count = 0;
+        const config = {
+            userName: 'Prasanna',
+            theme: 'theme-midnight',
+            backgroundPattern: 'bg-pattern-2',
+            searchEngine: 'google',
+        };
+
+        const searchEngines = {
+            google: 'https://www.google.com/search?q=',
+            brave: 'https://search.brave.com/search?q=',
+            duckduckgo: 'https://duckduckgo.com/?q=',
+            bing: 'https://www.bing.com/search?q='
+        };
+
+        const quotes = [
+            "The best way to predict the future is to create it. - Peter Drucker",
+            "Innovation distinguishes between a leader and a follower. - Steve Jobs",
+            "Simplicity is the ultimate sophistication. - Leonardo da Vinci",
+            "The only way to do great work is to love what you do. - Steve Jobs",
+            "It's not a bug, it's a feature! - Unknown",
+            "Code is like humor. When you have to explain it, it's bad. - Cory House",
+            "First, solve the problem. Then, write the code. - John Johnson",
+            "Experience is the name everyone gives to their mistakes. - Oscar Wilde",
+            "In order to be irreplaceable, one must always be different. - Coco Chanel",
+            "The future belongs to those who believe in the beauty of their dreams. - Eleanor Roosevelt"
+        ];
+
+        // DOM Elements
+        const elements = {
+            greeting: document.getElementById('greeting'),
+            clock: document.getElementById('clock'),
+            date: document.getElementById('date'),
+            quote: document.getElementById('quote'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            searchEngine: document.getElementById('searchEngine'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            settingsModal: document.getElementById('settingsModal'),
+            closeSettings: document.getElementById('closeSettings'),
+            saveSettings: document.getElementById('saveSettings'),
+            themeSelect: document.getElementById('themeSelect'),
+            backgroundSelect: document.getElementById('backgroundSelect'),
+            userName: document.getElementById('userName'),
+            defaultSearchEngine: document.getElementById('defaultSearchEngine'),
+            layoutBtn: document.getElementById('layoutBtn'),
+            dashboardGrid: document.getElementById('dashboardGrid'),
+            cpuUsage: document.getElementById('cpuUsage'),
+            cpuBar: document.getElementById('cpuBar'),
+            memUsage: document.getElementById('memUsage'),
+            memBar: document.getElementById('memBar'),
+            temp: document.getElementById('temp'),
+            weather: document.getElementById('weather'),
+            lastUpdated: document.getElementById('lastUpdated'),
+            notifications: document.getElementById('notifications')
+        };
+
+        // Initialize Dashboard
+        function init() {
+            console.log('Initializing dashboard...');
             updateClock();
+            updateGreeting();
+            updateQuote();
+            updateLastUpdated();
+            loadSettings();
+            setupEventListeners();
+            simulateSystemStats();
+            setInterval(updateClock, 1000);
+            setInterval(simulateSystemStats, 5000);
+        }
 
-            // Wallpaper functionality
-            const wallpaperToggle = document.getElementById('wallpaperToggle');
-            const wallpapers = ['wallpaper-1', 'wallpaper-2', 'wallpaper-3'];
-            let currentWallpaperIndex = 0;
-            wallpaperToggle.addEventListener('click', () => {
-                document.body.classList.remove(...wallpapers);
-                currentWallpaperIndex = (currentWallpaperIndex + 1) % wallpapers.length;
-                document.body.classList.add(wallpapers[currentWallpaperIndex]);
+        // Time and Date Functions
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
             });
-            // Set initial wallpaper
-            document.body.classList.add(wallpapers[currentWallpaperIndex]);
+            const date = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
 
-            // Quotes functionality
-            const quoteElement = document.getElementById('quote');
-            const quotes = [
-                "The best way to predict the future is to create it.",
-                "Innovation distinguishes between a leader and a follower.",
-                "Simplicity is the ultimate sophistication.",
-                "The only way to do great work is to love what you do.",
-                "It's not a bug, it's a feature!"
-            ];
-            // Display a random quote on page load
+            elements.clock.textContent = time;
+            elements.date.textContent = date;
+        }
+
+        function updateGreeting() {
+            const now = new Date();
+            const hours = now.getHours();
+            let greeting = '';
+
+            if (hours < 12) greeting = 'Good morning';
+            else if (hours < 18) greeting = 'Good afternoon';
+            else greeting = 'Good evening';
+
+            elements.greeting.textContent = `${greeting}, ${config.userName}! 👋`;
+        }
+
+        function updateQuote() {
             const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-            quoteElement.textContent = randomQuote;
+            elements.quote.textContent = randomQuote;
+        }
 
-            // --- SORT & TOGGLE FUNCTIONALITY ---
-            
-            const mainContent = document.getElementById('mainContent');
+        function updateLastUpdated() {
+            const now = new Date();
+            elements.lastUpdated.textContent = now.toLocaleString();
+        }
 
-            // Toggle functionality
-            document.querySelectorAll('.toggle-cards').forEach(button => {
-                button.addEventListener('click', () => {
-                    const sectionCard = button.closest('.section-card');
-                    const content = sectionCard.querySelector('.section-content');
-                    content.classList.toggle('collapsed-content');
-                    
-                    // Change arrow icon direction
-                    const icon = button.querySelector('svg');
-                    if (content.classList.contains('collapsed-content')) {
-                        icon.innerHTML = '<path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707 2.354 11.354a.5.5 0 0 1-.708-.708l6-6z"/>';
+        // Search Functionality
+        function performSearch() {
+            const query = elements.searchInput.value.trim();
+            if (query) {
+                const engine = elements.searchEngine.value || config.searchEngine;
+                const url = searchEngines[engine] + encodeURIComponent(query);
+                window.open(url, '_blank');
+                addNotification('🔍 Search performed', 'success');
+            }
+        }
+
+        // Settings Management
+        function loadSettings() {
+            elements.themeSelect.value = config.theme;
+            elements.backgroundSelect.value = config.backgroundPattern;
+            elements.userName.value = config.userName;
+            elements.defaultSearchEngine.value = config.searchEngine;
+            elements.searchEngine.value = config.searchEngine;
+
+            if (localStorage.getItem('theme') === null) {
+                count += 1;
+                applyTheme();
+            }
+            applyBackground();
+        }
+
+        function saveSettings() {
+            config.theme = elements.themeSelect.value;
+            config.backgroundPattern = elements.backgroundSelect.value;
+            config.userName = elements.userName.value || 'User';
+            config.searchEngine = elements.defaultSearchEngine.value;
+
+            applyTheme();
+            applyBackground();
+            updateGreeting();
+            elements.searchEngine.value = config.searchEngine;
+
+            elements.settingsModal.classList.add('hidden');
+            addNotification('⚙️ Settings saved successfully!', 'success');
+        }
+
+        function applyTheme() {
+            let savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme !== config.theme || !savedTheme) {
+                localStorage.setItem('theme', config.theme);
+                savedTheme = config.theme; // ✅ update variable too
+            }
+
+            const themeToApply = savedTheme;
+
+            // remove old theme classes
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+
+            console.log('1:', savedTheme, '2:', config.theme, config, '3:', themeToApply, count);
+
+            document.body.classList.add(themeToApply);
+        }
+
+
+        function applyBackground() {
+            document.body.className = document.body.className.replace(/bg-pattern-\w+/g, '');
+            if (config.backgroundPattern) {
+                document.body.classList.add(config.backgroundPattern);
+            }
+        }
+
+        // Layout Toggle
+        function toggleLayout() {
+            const isCompact = elements.dashboardGrid.classList.contains('xl:grid-cols-6');
+
+            if (isCompact) {
+                elements.dashboardGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6';
+            } else {
+                elements.dashboardGrid.className = 'grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4';
+            }
+
+            addNotification('🔄 Layout toggled', 'info');
+        }
+
+        // System Stats Simulation
+        function simulateSystemStats() {
+            const cpu = Math.floor(Math.random() * 100);
+            const mem = Math.floor(Math.random() * 100);
+
+            elements.cpuUsage.textContent = `${cpu}%`;
+            elements.cpuBar.style.width = `${cpu}%`;
+
+            elements.memUsage.textContent = `${mem}%`;
+            elements.memBar.style.width = `${mem}%`;
+
+            // Simulate temperature
+            const temp = Math.floor(Math.random() * 30) + 15;
+            elements.temp.textContent = `${temp}°C`;
+            elements.weather.textContent = 'Clear';
+        }
+
+        // Notification System
+        function addNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification rounded-lg p-3 mb-2 flex items-center gap-2 transform translate-x-full transition-transform duration-300`;
+
+            const colors = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                warning: 'bg-yellow-600',
+                info: 'bg-blue-600'
+            };
+
+            notification.classList.add(colors[type] || colors.info);
+            notification.innerHTML = `
+                <div class="flex-1 text-sm font-medium text-white">${message}</div>
+                <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+
+            elements.notifications.appendChild(notification);
+
+            // Slide in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.add('translate-x-full');
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        // Section Collapse Functionality
+        function setupSectionCollapse() {
+            document.querySelectorAll('.collapse-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.closest('.section-card');
+                    const content = section.querySelector('.section-content');
+                    const icon = btn.querySelector('svg');
+
+                    content.classList.toggle('hidden');
+
+                    if (content.classList.contains('hidden')) {
+                        icon.style.transform = 'rotate(-90deg)';
                     } else {
-                        icon.innerHTML = '<path fill-rule="evenodd" d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>';
+                        icon.style.transform = 'rotate(0deg)';
                     }
                 });
+            });
+        }
+
+        // Event Listeners Setup
+        function setupEventListeners() {
+            // Search functionality
+            elements.searchBtn.addEventListener('click', performSearch);
+            elements.searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') performSearch();
             });
 
-            // Sort functionality
-            document.querySelectorAll('.sort-up').forEach(button => {
-                button.addEventListener('click', () => {
-                    const sectionCard = button.closest('.section-card');
-                    const prevSection = sectionCard.previousElementSibling;
-                    if (prevSection) {
-                        mainContent.insertBefore(sectionCard, prevSection);
-                    }
-                });
+            // Settings modal
+            elements.settingsBtn.addEventListener('click', () => {
+                elements.settingsModal.classList.remove('hidden');
             });
 
-            document.querySelectorAll('.sort-down').forEach(button => {
-                button.addEventListener('click', () => {
-                    const sectionCard = button.closest('.section-card');
-                    const nextSection = sectionCard.nextElementSibling;
-                    if (nextSection) {
-                        mainContent.insertBefore(nextSection, sectionCard);
-                    }
-                });
+            elements.closeSettings.addEventListener('click', () => {
+                elements.settingsModal.classList.add('hidden');
             });
-        });
+
+            elements.saveSettings.addEventListener('click', saveSettings);
+
+            // Layout toggle
+            elements.layoutBtn.addEventListener('click', toggleLayout);
+
+            // Close modal on outside click
+            elements.settingsModal.addEventListener('click', (e) => {
+                if (e.target === elements.settingsModal) {
+                    elements.settingsModal.classList.add('hidden');
+                }
+            });
+
+            // Section collapse functionality
+            setupSectionCollapse();
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'k') {
+                    e.preventDefault();
+                    elements.searchInput.focus();
+                }
+
+                if (e.key === 'Escape') {
+                    elements.settingsModal.classList.add('hidden');
+                }
+            });
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+
+        // Welcome message
+        setTimeout(() => {
+            addNotification('🚀 Welcome to CandyMan Pro! Press Ctrl+K to search.', 'success');
+        }, 1000);
     </script>
-
 </body>
+
 </html>
