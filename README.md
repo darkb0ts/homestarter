@@ -33,6 +33,7 @@ You can customize the dashboard by clicking on the **Settings** (⚙️) icon. T
 
 All settings are saved in your browser's local storage.
 
+
 ## Technologies Used
 
 - **HTML:** The structure of the dashboard.
